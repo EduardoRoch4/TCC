@@ -1,0 +1,327 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(180deg, #fff, #ffe8e8);
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 40px;
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(5px);
+  border-bottom: 2px solid #d4af37;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.logo a {
+  display: inline-block;
+  text-decoration: none;
+  cursor: pointer;
+}
+.logo a {
+  display: inline-block;
+  text-decoration: none;
+  cursor: pointer;
+}
+.logo img {
+  height: 100px;
+  transition: transform 0.3s ease;
+}
+.logo img:hover {
+  transform: scale(1.05);
+}
+.nav-buttons a {
+  text-decoration: none;
+  background: linear-gradient(90deg, #ff3b3b, #d40000);
+  color: #fff;
+  padding: 8px 18px;
+  margin-left: 10px;
+  border-radius: 25px;
+  transition: 0.3s;
+}
+.nav-buttons a:hover {
+  background: linear-gradient(90deg, #d40000, #ff3b3b);
+  box-shadow: 0 0 8px rgba(255,59,59,0.6);
+}
+
+.chat-container {
+  flex: 1;
+  max-width: 800px;
+  margin: 60px auto;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  animation: fadeIn 0.8s ease-in-out;
+}
+.chat-container h1 {
+  text-align: center;
+  color: #b30000;
+  margin-bottom: 20px;
+}
+.chat-box {
+  flex: 1;
+  overflow-y: auto;
+  background: #f8f8f8;
+  border-radius: 15px;
+  padding: 15px;
+  margin-bottom: 20px;
+  max-height: 400px;
+}
+.message {
+  margin-bottom: 10px;
+  padding: 10px 15px;
+  border-radius: 15px;
+  width: fit-content;
+  max-width: 70%;
+  line-height: 1.4;
+}
+.message.user {
+  background: #d4af37;
+  color: #000;
+  align-self: flex-end;
+  margin-left: auto;
+}
+.message.system {
+  background: #b30000;
+  color: white;
+  align-self: flex-start;
+}
+
+.chat-input {
+  display: flex;
+  gap: 10px;
+}
+.chat-input input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 2px solid #ccc;
+  border-radius: 25px;
+  font-size: 15px;
+  outline: none;
+}
+.chat-input input:focus {
+  border-color: #d4af37;
+}
+.chat-input button {
+  background: linear-gradient(90deg, #d4af37, #f8d64e);
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+.chat-input button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(212,175,55,0.7);
+}
+footer {
+  background: #b30000;
+  color: white;
+  text-align: center;
+  padding: 15px;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===================== HEADER ===================== */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  padding: 15px 40px;
+  border-bottom: 2px solid #d4af37;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo img {
+  height: 100px;
+  transition: transform 0.3s ease;
+}
+.logo img:hover {
+  transform: scale(1.05);
+}
+
+/* ===== Navegação ===== */
+.nav-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-buttons a {
+  text-decoration: none;
+  background: linear-gradient(90deg, #ff3b3b, #d40000);
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 25px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.nav-buttons a:hover {
+  background: linear-gradient(90deg, #d40000, #ff3b3b);
+  box-shadow: 0 0 10px rgba(255, 59, 59, 0.6);
+}
+
+/* ===== Ícone do menu lateral ===== */
+.menu-icon {
+  display: none;
+  font-size: 40px;
+  cursor: pointer;
+  color: #b00;
+}
+
+/* ===== Overlay (fundo desfocado) ===== */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 150;
+}
+.overlay.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ===== Menu lateral ===== */
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: -270px;
+  width: 250px;
+  height: 100%;
+  background: #fff;
+  box-shadow: -3px 0 10px rgba(0,0,0,0.3);
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transition: right 0.4s ease;
+  z-index: 200;
+}
+
+.side-menu.active {
+  right: 0;
+}
+
+/* ===== Botão de fechar ===== */
+.close-btn {
+  align-self: flex-end;
+  font-size: 25px;
+  cursor: pointer;
+  color: #d40000;
+  margin-bottom: 10px;
+  transition: 0.3s;
+}
+.close-btn:hover {
+  color: #ff3b3b;
+  transform: scale(1.2);
+}
+
+.side-menu a {
+  text-decoration: none;
+  background: #ff3b3b;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 20px;
+  text-align: center;
+  font-weight: 600;
+  transition: 0.3s;
+}
+.side-menu a:hover {
+  background: #d40000;
+}
+
+/* ===== RESPONSIVO ===== */
+@media (max-width: 768px) {
+  .nav-buttons {
+    display: none;
+  }
+  .menu-icon {
+    display: block;
+  }
+}
+
+/* ===================== FOOTER ===================== */
+footer {
+  background: #b30000;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-size: 14px;
+}
+
+/* ===================== ANIMAÇÕES ===================== */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s ease-out;
+}
+/* Você provavelmente tem um JS que adiciona a classe .visible */
+.fade-in-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ... (Todo o seu CSS anterior permanece igual) ... */
+
+.chat-input button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(212,175,55,0.7);
+}
+
+/* 🟢 ADICIONADO: Estilos para perguntas rápidas 🟢 */
+.quick-replies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 15px;
+  justify-content: center; /* Centraliza os botões */
+}
+
+.quick-reply {
+  background: #f0f0f0;
+  border: 1px solid #d4af37;
+  color: #b30000;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.quick-reply:hover {
+  background: #d4af37;
+  color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+/* 🟢 FIM DA ADIÇÃO 🟢 */

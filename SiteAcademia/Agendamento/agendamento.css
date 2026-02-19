@@ -1,0 +1,429 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #fff;
+  color: #222;
+  overflow-x: hidden;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  padding: 15px 40px;
+  border-bottom: 2px solid #d4af37;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo a {
+  display: inline-block;
+  text-decoration: none;
+  cursor: pointer;
+}
+.logo img {
+  height: 100px;
+  transition: transform 0.3s ease;
+}
+.logo img:hover {
+  transform: scale(1.05);
+}
+
+/* ===== Navegação ===== */
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.nav-buttons a {
+  text-decoration: none;
+  background: linear-gradient(90deg, #ff3b3b, #d40000);
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 25px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.nav-buttons a:hover {
+  background: linear-gradient(90deg, #d40000, #ff3b3b);
+  box-shadow: 0 0 10px rgba(255, 59, 59, 0.6);
+}
+
+/* Estilo para o span de exibição do usuário */
+.nav-buttons #user-display {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+/* ===== Ícone do menu lateral ===== */
+.menu-icon {
+  display: none;
+  font-size: 40px;
+  cursor: pointer;
+  color: #b00;
+}
+
+/* ===== Overlay (fundo desfocado) ===== */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 150;
+}
+.overlay.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ===== Menu lateral ===== */
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: -270px;
+  width: 250px;
+  height: 100%;
+  background: #fff;
+  box-shadow: -3px 0 10px rgba(0,0,0,0.3);
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transition: right 0.4s ease;
+  z-index: 200;
+}
+
+.side-menu.active {
+  right: 0;
+}
+
+/* ===== Botão de fechar ===== */
+.close-btn {
+  align-self: flex-end;
+  font-size: 25px;
+  cursor: pointer;
+  color: #d40000;
+  margin-bottom: 10px;
+  transition: 0.3s;
+}
+.close-btn:hover {
+  color: #ff3b3b;
+  transform: scale(1.2);
+}
+
+.side-menu a {
+  text-decoration: none;
+  background: #ff3b3b;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 20px;
+  text-align: center;
+  font-weight: 600;
+  transition: 0.3s;
+}
+.side-menu a:hover {
+  background: #d40000;
+}
+
+/* ===================== RESPONSIVO (Header) ===================== */
+@media (max-width: 768px) {
+  .nav-buttons {
+    display: none;
+  }
+  .menu-icon {
+    display: block;
+  }
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .nav-buttons {
+    display: none;
+  }
+  .menu-icon {
+    display: block;
+  }
+}
+
+/* ----------- Estilo do Calendário ----------- */
+.calendar {
+  max-width: 400px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.calendar-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.calendar-header button {
+  background-color: #ff6b6b;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.calendar-header button:hover {
+  background-color: #ff4c4c;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.calendar-days div {
+  padding: 10px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.calendar-days div:hover {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+.calendar-days .selected {
+  background-color: #ff4c4c;
+  color: white;
+}
+
+/* ----------- Estilo da seleção ----------- */
+.selection-container {
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  margin: 20px auto 60px auto;
+  gap: 20px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.selection-container label {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.selection-container select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.selection-container select:focus {
+  border-color: #ff6b6b;
+  outline: none;
+}
+
+#agendar-btn {
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#agendar-btn:hover {
+  background-color: #ff4c4c;
+}
+
+.btn-voltar-inicio {
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.btn-voltar-inicio:hover {
+  background-color: #357abd;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ===================== FOOTER ===================== */
+footer {
+  background: #b30000;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-size: 14px;
+}
+
+/* ===================== ANIMAÇÕES ===================== */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s ease-out;
+}
+/* Você provavelmente tem um JS que adiciona a classe .visible */
+.fade-in-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===================== NOTIFICAÇÕES ===================== */
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 400px;
+}
+
+.notification {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: slideInRight 0.3s ease-out;
+  border-left: 4px solid #d4af37;
+  min-width: 300px;
+}
+
+.notification.success {
+  border-left-color: #28a745;
+}
+
+.notification.error {
+  border-left-color: #dc3545;
+}
+
+.notification.warning {
+  border-left-color: #ffc107;
+}
+
+.notification.info {
+  border-left-color: #17a2b8;
+}
+
+.notification-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.notification-content {
+  flex: 1;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+
+.notification-close:hover {
+  color: #000;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.notification.hiding {
+  animation: slideOutRight 0.3s ease-out forwards;
+}
+
+@media (max-width: 520px) {
+  .notification-container {
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+  .notification {
+    min-width: auto;
+  }
+}

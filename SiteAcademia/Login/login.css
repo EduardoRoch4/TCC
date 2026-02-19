@@ -1,0 +1,124 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(180deg, #b30000, #7a0f0f);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.login-box {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  padding: 40px 30px;
+  width: 350px;
+  text-align: center;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.login-box h1 {
+  color: #b30000;
+  font-size: 32px;
+  margin-bottom: 25px;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 10px 15px;
+  margin: 10px 0;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.login-box input:focus {
+  border-color: #d4af37;
+}
+
+.login-box button {
+  width: 100%;
+  background: linear-gradient(90deg, #d4af37, #f8d64e);
+  color: #000;
+  border: none;
+  border-radius: 25px;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.login-box button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+}
+
+.login-box p {
+  margin-top: 15px;
+  color: #555;
+}
+
+.login-box a {
+  color: #b30000;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-box a:hover {
+  text-decoration: underline;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Estilização para o novo botão 'Voltar' como um link */
+#btn-voltar {
+  /* Remove a aparência de botão padrão */
+  background: none;
+  color: #007bff; /* Cor de link padrão (azul) */
+  border: none;
+  padding: 0;
+  margin-top: 10px; /* Espaçamento após o botão 'Entrar' */
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: underline; /* Adiciona sublinhado para parecer mais com um link */
+  display: block; /* Ocupa a largura total para centralizar (se a div for centralizada) */
+  width: 100%; 
+  text-align: center; 
+}
+
+#btn-voltar:hover {
+  color: #0056b3; /* Cor mais escura no hover */
+  text-decoration: none; /* Remove o sublinhado no hover para um efeito visual */
+}
+
+/* Garante que o botão 'Entrar' (btn-login) mantenha seu estilo principal */
+#btn-login {
+  /* Mantenha o estilo do seu botão principal aqui */
+  width: 100%;
+  padding: 10px;
+  background-color: #5cb85c; /* Exemplo: verde */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}

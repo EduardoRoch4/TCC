@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat | TechFit</title>
+  <link rel="stylesheet" href="chat.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+
+<header>
+  <div class="logo">
+    <a href="../index.html">
+      <img src="../IMG/Logo.png" alt="Logo TechFit">
+    </a>
+  </div>
+
+  <nav class="nav-buttons" id="nav-buttons">
+    <a href="../index.html">Início</a>
+    <a href="../Agendamento/Agendamento.html">Agendamento</a>
+    <a href="../Unidades/unidades.html">Unidades</a>
+    <a href="../Chat/chat.html">Chat</a>
+    <a href="../Nossa História/nos.html">Sobre Nós</a>
+    <a href="../Alunos/usuario.php" id="perfil-btn" style="display:none;">Perfil</a>
+    <a href="../Login/login.php" id="login-btn">Login</a>
+  </nav>
+
+  <div class="menu-icon" id="menu-icon">☰</div>
+</header>
+
+<div class="side-menu" id="side-menu">
+  <div class="close-btn" id="close-btn">✖</div>
+  <a href="../index.html">Início</a>
+  <a href="../Agendamento/Agendamento.html">Agendamento</a>
+  <a href="../Unidades/unidades.html">Unidades</a>
+  <a href="../Chat/chat.html">Chat</a>
+  <a href="../Nossa História/nos.html">Sobre Nós</a>
+  <a href="../Alunos/usuario.php" id="perfil-side" style="display:none;">Perfil</a>
+  <a href="../Login/login.php" id="login-side">Login</a>
+</div>
+<div class="overlay" id="overlay"></div>
+
+  <main class="chat-container">
+    <h1>💬 Chat TechFit</h1>
+    <div class="chat-box" id="chat-box">
+      <div class="message system">Bem-vindo ao suporte TechFit! Como posso ajudar hoje?</div>
+    </div>
+
+    <div class="quick-replies" id="quick-replies">
+      <button class="quick-reply" data-question="Quais são os horários de funcionamento?">Horários</button>
+      <button class="quick-reply" data-question="Quais planos vocês oferecem?">Planos</button>
+      <button class="quick-reply" data-question="Como agendar uma aula?">Agendar Aula</button>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="mensagem" placeholder="Digite sua mensagem...">
+      <button id="enviar">Enviar</button>
+    </div>
+  </main>
+
+  <footer class="fade-in-up">
+    <p>© 2025 TechFit — Todos os direitos reservados</p>
+  </footer>
+
+  <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendamento | TechFit</title>
+  <link rel="stylesheet" href="agendamento.css">
+</head>
+<body>
+
+  <div class="overlay" id="overlay"></div>
+
+<header>
+  <div class="logo">
+    <a href="../index.html">
+      <img src="../IMG/Logo.png" alt="Logo TechFit">
+    </a>
+  </div>
+
+  <nav class="nav-buttons" id="nav-buttons">
+    <a href="../index.html">Início</a>
+    <a href="../Agendamento/Agendamento.html">Agendamento</a>
+    <a href="../Unidades/unidades.html">Unidades</a>
+    <a href="../Chat/chat.html">Chat</a>
+    <a href="../Nossa História/nos.html">Sobre Nós</a>
+    <a href="../Alunos/usuario.php" id="perfil-btn" style="display:none;">Perfil</a>
+    <a href="../Login/login.php" id="login-btn">Login</a>
+  </nav>
+
+  <div class="menu-icon" id="menu-icon">☰</div>
+</header>
+
+<div class="side-menu" id="side-menu">
+  <div class="close-btn" id="close-btn">✖</div>
+  <a href="../index.html">Início</a>
+  <a href="../Agendamento/Agendamento.html">Agendamento</a>
+  <a href="../Unidades/unidades.html">Unidades</a>
+  <a href="../Chat/chat.html">Chat</a>
+  <a href="../Nossa História/nos.html">Sobre Nós</a>
+  <a href="../Alunos/usuario.php" id="perfil-side" style="display:none;">Perfil</a>
+  <a href="../Login/login.php" id="login-side">Login</a>
+</div>
+
+  <div class="calendar">
+    <div class="calendar-header">
+      <button class="prev-month">&lt;</button>
+      <h2></h2>
+      <button class="next-month">&gt;</button>
+    </div>
+    <div class="calendar-days"></div>
+  </div>
+
+  <div class="selection-container">
+    <div>
+      <label for="time-select">Selecione o horário:</label>
+      <select id="time-select">
+        <option value="">Escolha</option>
+        <option value="06:00">06:00</option>
+        <option value="08:00">08:00</option>
+        <option value="09:00">09:00</option>
+        <option value="11:00">11:00</option>
+        <option value="12:30">12:30</option>
+        <option value="13:30">13:30</option>
+        <option value="14:30">14:30</option>
+        <option value="15:30">15:30</option>
+        <option value="16:30">16:30</option>
+        <option value="17:30">17:30</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="goal-select">Selecione o objetivo:</label>
+      <select id="goal-select">
+        <option value="">Escolha</option>
+        <option value="Perda de peso">Perda de peso</option>
+        <option value="Ganho de Massa">Ganho de Massa</option>
+        <option value="Hipertrofia">Hipertrofia</option>
+        <option value="Saúde">Saúde</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="modalidade-select">Selecione a modalidade:</label>
+      <select id="modalidade-select" name="modalidade">
+        <option value="">Escolha</option>
+        <option value="Musculação">Musculação</option>
+        <option value="Spinning">Spinning</option>
+        <option value="Yoga">Yoga</option>
+        <option value="Funcional">Funcional</option>
+        <option value="Pilates">Pilates</option>
+      </select>
+    </div>
+
+    <button id="agendar-btn">Agendar</button>
+    <a href="../index.html" class="btn-voltar-inicio">← Voltar ao Início</a>
+  </div>
+
+  <footer class="fade-in-up">
+  <p>© 2025 TechFit — Todos os direitos reservados</p>
+</footer>
+
+  <script src="agendamento.js"></script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechFit</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+
+<header>
+  <div class="logo">
+    <a href="index.html">
+      <img src="IMG/Logo.png" alt="Logo TechFit">
+    </a>
+    <!-- Olá sempre visível -->
+    <span id="user-display">
+      Olá, <strong id="user-name">Visitante</strong>
+    </span>
+  </div>
+
+  <nav class="nav-buttons" id="nav-buttons">
+    <a href="index.html">Início</a>
+    <a href="Agendamento/Agendamento.html">Agendamento</a>
+    <a href="Unidades/Unidades.html">Unidades</a>
+    <a href="Chat/chat.html">Chat</a>
+    <a href="Nossa História/nos.html">Sobre Nós</a>
+    <a href="Alunos/usuario.php" id="perfil-btn" style="display:none;">Perfil</a>
+    <a href="Login/login.php" id="login-btn">Login</a>
+  </nav>
+
+  <div class="menu-icon" id="menu-icon">☰</div>
+</header>
+
+<div class="side-menu" id="side-menu">
+  <div class="close-btn" id="close-btn">✖</div>
+  <a href="index.html">Início</a>
+  <a href="Agendamento/Agendamento.html">Agendamento</a>
+  <a href="Unidades/Unidades.html">Unidades</a>
+  <a href="Chat/chat.html">Chat</a>
+  <a href="Nossa História/nos.html">Sobre Nós</a>
+  <a href="Alunos/usuario.php" id="perfil-side" style="display:none;">Perfil</a>
+  <a href="Login/login.php" id="login-side">Login</a>
+  <a href="#" id="logout-side" style="display:none;">Logout</a>
+
+  <!-- Olá também no side-menu -->
+  <span id="user-display-side">
+    Olá, <strong id="user-name-side">Visitante</strong>
+  </span>
+</div>
+
+<section class="banner-container fade-in-up">
+  <img src="IMG/banner.png" alt="Oferta exclusiva TechFit" class="banner-img">
+</section>
+
+<section class="planos">
+  <div class="card fade-in-up">
+    <h2>Plano Black</h2>
+    <p>Treine em qualquer unidade TechFit do Brasil e América Latina.</p>
+    <p class="preco">A partir de <strong>R$ 149,90</strong></p>
+    <a href="PAGAMENTOS/pagamentos.php" class="btn brilho">Contratar agora</a>
+    <ul>
+      <li>✔ Acesso total</li>
+      <li>✔ Leve 5 amigos/mês</li>
+      <li>✔ Cadeira de massagem</li>
+      <li>✔ Aplicativo TechFit</li>
+    </ul>
+  </div>
+
+  <div class="card fade-in-up">
+    <h2>Plano Fit</h2>
+    <p>Plano econômico com acesso livre à sua unidade preferida.</p>
+    <p class="preco">A partir de <strong>R$ 99,90</strong></p>
+    <a href="PAGAMENTOS/pagamentos.php" class="btn brilho">Contratar agora</a>
+    <ul>
+      <li>✔ Acesso à unidade</li>
+      <li>✘ Levar amigos</li>
+      <li>✘ Cadeira de massagem</li>
+      <li>✔ TechFit App</li>
+    </ul>
+  </div>
+
+  <div class="card fade-in-up">
+    <h2>Plano Tech</h2>
+    <p>Treine com conforto e liberdade, ideal para rotina dinâmica.</p>
+    <p class="preco">A partir de <strong>R$ 119,90</strong></p>
+    <a href="PAGAMENTOS/pagamentos.php" class="btn brilho">Contratar agora</a>
+    <ul>
+      <li>✔ Acesso a todas as academias</li>
+      <li>✘ Levar amigos</li>
+      <li>✔ Cadeira de massagem</li>
+      <li>✔ TechFit App</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="fade-in-up">
+  <p>© 2025 TechFit — Todos os direitos reservados</p>
+</footer>
+
+<script src="index.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const nome = localStorage.getItem("usuarioNome");
+
+    const userNameHeader = document.getElementById("user-name");
+    const userNameSide = document.getElementById("user-name-side");
+
+    const loginBtn = document.getElementById("login-btn");
+    const perfilBtn = document.getElementById("perfil-btn");
+
+    const loginSide = document.getElementById("login-side");
+    const perfilSide = document.getElementById("perfil-side");
+    const logoutSide = document.getElementById("logout-side");
+
+    // Se NÃO estiver logado
+    if (!nome) {
+        userNameHeader.textContent = "Visitante";
+        userNameSide.textContent = "Visitante";
+
+        // Mostrar login
+        loginBtn.style.display = "inline-block";
+        loginSide.style.display = "block";
+
+        // Esconder perfil + logout
+        perfilBtn.style.display = "none";
+        perfilSide.style.display = "none";
+        logoutSide.style.display = "none";
+
+        return;
+    }
+
+    // Se estiver logado
+    userNameHeader.textContent = nome;
+    userNameSide.textContent = nome;
+
+    // Mostrar perfil + logout
+    perfilBtn.style.display = "inline-block";
+    perfilSide.style.display = "block";
+    logoutSide.style.display = "block";
+
+    // Esconder login
+    loginBtn.style.display = "none";
+    loginSide.style.display = "none";
+
+    // Função de logout
+    logoutSide.addEventListener("click", () => {
+        localStorage.removeItem("usuarioNome");
+        location.reload();
+    });
+});
+</script>
+
+</body>
+</html>

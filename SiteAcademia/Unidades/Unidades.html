@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>techFit - Unidades</title>
+  <link rel="stylesheet" href="unidades.css">
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+
+<header>
+  <div class="logo">
+    <a href="../index.html">
+      <img src="../IMG/Logo.png" alt="Logo TechFit">
+    </a>
+  </div>
+
+  <nav class="nav-buttons" id="nav-buttons">
+    <a href="../index.html">Início</a>
+    <a href="../Agendamento/Agendamento.html">Agendamento</a>
+    <a href="../Unidades/unidades.html">Unidades</a>
+    <a href="../Chat/chat.html">Chat</a>
+    <a href="../Nossa História/nos.html">Sobre Nós</a>
+    <a href="../Alunos/usuario.php" id="perfil-btn" style="display:none;">Perfil</a>
+    <a href="../Login/login.php" id="login-btn">Login</a>
+  </nav>
+
+  <div class="menu-icon" id="menu-icon">☰</div>
+</header>
+
+<div class="side-menu" id="side-menu">
+  <div class="close-btn" id="close-btn">✖</div>
+  <a href="../index.html">Início</a>
+  <a href="../Agendamento/Agendamento.html">Agendamento</a>
+  <a href="../Unidades/unidades.html">Unidades</a>
+  <a href="../Chat/chat.html">Chat</a>
+  <a href="../Nossa História/nos.html">Sobre Nós</a>
+  <a href="../Alunos/usuario.php" id="perfil-side" style="display:none;">Perfil</a>
+  <a href="../Login/login.php" id="login-side">Login</a>
+</div>
+
+  <!-- Conteúdo das Unidades -->
+  <div class="unidades-container">
+    <h1 class="page-title">Nossas Unidades</h1>
+
+    <!-- Barra de pesquisa -->
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="🔍 Pesquisar unidade...">
+    </div>
+    
+    <div class="unidades-grid">
+
+      <!-- Unidade 1 -->
+      <div class="unidade-card">
+        <div class="unidade-image">
+          <img src="../IMG/Gym1.webp" alt="Unidade Centro" width="600" height="400" loading="lazy">
+        </div>
+        <div class="unidade-info">
+          <h3>techFit Centro</h3>
+          <p class="unidade-endereco"><strong>📍 Endereço:</strong> Rua Principal, 123 - Centro</p>
+          <p class="unidade-horario"><strong>⏰ Funcionamento:</strong> Seg a Sex: 05h–23h • Sáb: 06h–20h • Dom: 08h–18h</p>
+          <p class="unidade-contato"><strong>📞 Contato:</strong> (11) 9999-9999</p>
+          <button class="btn-agendar" data-unidade="techFit Centro">Escolher Esta Unidade</button>
+        </div>
+      </div>
+
+      <!-- Unidade 2 -->
+      <div class="unidade-card">
+        <div class="unidade-image">
+          <img src="../IMG/Gym2.webp" alt="Unidade Zona Sul" width="600" height="400" loading="lazy">
+        </div>
+        <div class="unidade-info">
+          <h3>techFit Zona Sul</h3>
+          <p class="unidade-endereco"><strong>📍 Endereço:</strong> Av. Paulista, 456 - Zona Sul</p>
+          <p class="unidade-horario"><strong>⏰ Funcionamento:</strong> Seg a Sex: 05h–23h • Sáb: 06h–20h • Dom: 08h–18h</p>
+          <p class="unidade-contato"><strong>📞 Contato:</strong> (11) 8888-8888</p>
+          <button class="btn-agendar" data-unidade="techFit Zona Sul">Escolher Esta Unidade</button>
+        </div>
+      </div>
+
+      <!-- Unidade 3 -->
+      <div class="unidade-card">
+        <div class="unidade-image">
+          <img src="../IMG/Gym3.webp" alt="Unidade Zona Norte" width="600" height="400" loading="lazy">
+        </div>
+        <div class="unidade-info">
+          <h3>techFit Zona Norte</h3>
+          <p class="unidade-endereco"><strong>📍 Endereço:</strong> Rua das Flores, 789 - Zona Norte</p>
+          <p class="unidade-horario"><strong>⏰ Funcionamento:</strong> Seg a Sex: 05h–23h • Sáb: 06h–20h • Dom: 08h–18h</p>
+          <p class="unidade-contato"><strong>📞 Contato:</strong> (11) 7777-7777</p>
+          <button class="btn-agendar" data-unidade="techFit Zona Norte">Escolher Esta Unidade</button>
+        </div>
+      </div>
+
+      <!-- Unidade 4 -->
+      <div class="unidade-card">
+        <div class="unidade-image">
+          <img src="../IMG/Gym4.webp" alt="Unidade Leste" width="600" height="400" loading="lazy">
+        </div>
+        <div class="unidade-info">
+          <h3>techFit Zona Leste</h3>
+          <p class="unidade-endereco"><strong>📍 Endereço:</strong> Av. Aricanduva, 1010 - Zona Leste</p>
+          <p class="unidade-horario"><strong>⏰ Funcionamento:</strong> Seg a Sex: 05h–23h • Sáb: 06h–20h • Dom: 08h–18h</p>
+          <p class="unidade-contato"><strong>📞 Contato:</strong> (11) 7666-6666</p>
+          <button class="btn-agendar" data-unidade="techFit Zona Leste">Escolher Esta Unidade</button>
+        </div>
+      </div>
+
+      <!-- Unidade 5 -->
+      <div class="unidade-card">
+        <div class="unidade-image">
+          <img src="../IMG/Gym5.webp" alt="Unidade Zona Oeste" width="600" height="400" loading="lazy">
+        </div>
+        <div class="unidade-info">
+          <h3>techFit Zona Oeste</h3>
+          <p class="unidade-endereco"><strong>📍 Endereço:</strong> Rua das Palmeiras, 55 - Zona Oeste</p>
+          <p class="unidade-horario"><strong>⏰ Funcionamento:</strong> Seg a Sex: 05h–23h • Sáb: 06h–20h • Dom: 08h–18h</p>
+          <p class="unidade-contato"><strong>📞 Contato:</strong> (11) 7555-5555</p>
+          <button class="btn-agendar" data-unidade="techFit Zona Oeste">Escolher Esta Unidade</button>
+        </div>
+      </div>
+
+      <!-- Unidade 6 -->
+      <div class="unidade-card">
+        <div class="unidade-image">
+          <img src="../IMG/Gym6.webp" alt="Unidade Mooca" width="600" height="400" loading="lazy">
+        </div>
+        <div class="unidade-info">
+          <h3>techFit Mooca</h3>
+          <p class="unidade-endereco"><strong>📍 Endereço:</strong> Rua dos Trilhos, 234 - Mooca</p>
+          <p class="unidade-horario"><strong>⏰ Funcionamento:</strong> Seg a Sex: 05h–23h • Sáb: 06h–20h • Dom: 08h–18h</p>
+          <p class="unidade-contato"><strong>📞 Contato:</strong> (11) 7444-4444</p>
+          <button class="btn-agendar" data-unidade="techFit Mooca">Escolher Esta Unidade</button>
+        </div>
+      </div>
+
+      <!-- Unidade 7 -->
+      <div class="unidade-card">
+        <div class="unidade-image">
+          <img src="../IMG/Gym7.webp" alt="Unidade Pinheiros" width="600" height="400" loading="lazy">
+        </div>
+        <div class="unidade-info">
+          <h3>techFit Pinheiros</h3>
+          <p class="unidade-endereco"><strong>📍 Endereço:</strong> Av. Rebouças, 678 - Pinheiros</p>
+          <p class="unidade-horario"><strong>⏰ Funcionamento:</strong> Seg a Sex: 05h–23h • Sáb: 06h–20h • Dom: 08h–18h</p>
+          <p class="unidade-contato"><strong>📞 Contato:</strong> (11) 7333-3333</p>
+          <button class="btn-agendar" data-unidade="techFit Pinheiros">Escolher Esta Unidade</button>
+        </div>
+      </div>
+
+      <!-- Unidade 8 -->
+      <div class="unidade-card">
+        <div class="unidade-image">
+          <img src="../IMG/Gym8.webp" alt="Unidade Vila Mariana" width="600" height="400" loading="lazy">
+        </div>
+        <div class="unidade-info">
+          <h3>techFit Vila Mariana</h3>
+          <p class="unidade-endereco"><strong>📍 Endereço:</strong> Rua Domingos de Moraes, 900 - Vila Mariana</p>
+          <p class="unidade-horario"><strong>⏰ Funcionamento:</strong> Seg a Sex: 05h–23h • Sáb: 06h–20h • Dom: 08h–18h</p>
+          <p class="unidade-contato"><strong>📞 Contato:</strong> (11) 7222-2222</p>
+          <button class="btn-agendar" data-unidade="techFit Vila Mariana">Escolher Esta Unidade</button>
+        </div>
+      </div>
+
+      <!-- Unidade 9 -->
+      <div class="unidade-card">
+        <div class="unidade-image">
+          <img src="../IMG/Gym9.webp" alt="Unidade Tatuapé" width="600" height="400" loading="lazy">
+        </div>
+        <div class="unidade-info">
+          <h3>techFit Tatuapé</h3>
+          <p class="unidade-endereco"><strong>📍 Endereço:</strong> Rua Tuiuti, 1500 - Tatuapé</p>
+          <p class="unidade-horario"><strong>⏰ Funcionamento:</strong> Seg a Sex: 05h–23h • Sáb: 06h–20h • Dom: 08h–18h</p>
+          <p class="unidade-contato"><strong>📞 Contato:</strong> (11) 7111-1111</p>
+          <button class="btn-agendar" data-unidade="techFit Tatuapé">Escolher Esta Unidade</button>
+        </div>
+      </div>
+
+      <!-- Unidade 10 -->
+      <div class="unidade-card">
+        <div class="unidade-image">
+          <img src="../IMG/Gym10.webp" alt="Unidade Santana" width="600" height="400" loading="lazy">
+        </div>
+        <div class="unidade-info">
+          <h3>techFit Santana</h3>
+          <p class="unidade-endereco"><strong>📍 Endereço:</strong> Rua Voluntários da Pátria, 2000 - Santana</p>
+          <p class="unidade-horario"><strong>⏰ Funcionamento:</strong> Seg a Sex: 05h–23h • Sáb: 06h–20h • Dom: 08h–18h</p>
+          <p class="unidade-contato"><strong>📞 Contato:</strong> (11) 7000-0000</p>
+          <button class="btn-agendar" data-unidade="techFit Santana">Escolher Esta Unidade</button>
+        </div>
+      </div>
+
+      <!-- Unidade 11 -->
+      <div class="unidade-card">
+        <div class="unidade-image">
+          <img src="../IMG/Gym11.webp" alt="Unidade Osasco" width="600" height="400" loading="lazy">
+        </div>
+        <div class="unidade-info">
+          <h3>techFit Osasco</h3>
+          <p class="unidade-endereco"><strong>📍 Endereço:</strong> Av. dos Autonomistas, 3500 - Osasco</p>
+          <p class="unidade-horario"><strong>⏰ Funcionamento:</strong> Seg a Sex: 05h–23h • Sáb: 06h–20h • Dom: 08h–18h</p>
+          <p class="unidade-contato"><strong>📞 Contato:</strong> (11) 9123-4567</p>
+          <button class="btn-agendar" data-unidade="techFit Osasco">Escolher Esta Unidade</button>
+        </div>
+      </div>
+
+      <!-- Unidade 12 -->
+      <div class="unidade-card">
+        <div class="unidade-image">
+          <img src="../IMG/Gym12.webp" alt="Unidade Guarulhos" width="600" height="400" loading="lazy">
+        </div>
+        <div class="unidade-info">
+          <h3>techFit Guarulhos</h3>
+          <p class="unidade-endereco"><strong>📍 Endereço:</strong> Av. Tiradentes, 800 - Guarulhos</p>
+          <p class="unidade-horario"><strong>⏰ Funcionamento:</strong> Seg a Sex: 05h–23h • Sáb: 06h–20h • Dom: 08h–18h</p>
+          <p class="unidade-contato"><strong>📞 Contato:</strong> (11) 9345-6789</p>
+          <button class="btn-agendar" data-unidade="techFit Guarulhos">Escolher Esta Unidade</button>
+        </div>
+      </div>
+
+      <!-- Unidade 13 -->
+      <div class="unidade-card">
+        <div class="unidade-image">
+          <img src="../IMG/Gym13.webp" alt="Unidade Santo André" width="600" height="400" loading="lazy">
+        </div>
+        <div class="unidade-info">
+          <h3>techFit Santo André</h3>
+          <p class="unidade-endereco"><strong>📍 Endereço:</strong> Rua Oratório, 1200 - Santo André</p>
+          <p class="unidade-horario"><strong>⏰ Funcionamento:</strong> Seg a Sex: 05h–23h • Sáb: 06h–20h • Dom: 08h–18h</p>
+          <p class="unidade-contato"><strong>📞 Contato:</strong> (11) 9456-7890</p>
+          <button class="btn-agendar" data-unidade="techFit Santo André">Escolher Esta Unidade</button>
+        </div>
+      </div>
+
+      <!-- Unidade 14 -->
+      <div class="unidade-card">
+        <div class="unidade-image">
+          <img src="../IMG/Gym14.webp" alt="Unidade São Bernardo" width="600" height="400" loading="lazy">
+        </div>
+        <div class="unidade-info">
+          <h3>techFit São Bernardo</h3>
+          <p class="unidade-endereco"><strong>📍 Endereço:</strong> Av. Kennedy, 2200 - São Bernardo</p>
+          <p class="unidade-horario"><strong>⏰ Funcionamento:</strong> Seg a Sex: 05h–23h • Sáb: 06h–20h • Dom: 08h–18h</p>
+          <p class="unidade-contato"><strong>📞 Contato:</strong> (11) 9567-8901</p>
+          <button class="btn-agendar" data-unidade="techFit São Bernardo">Escolher Esta Unidade</button>
+        </div>
+      </div>
+
+      <!-- Unidade 15 -->
+      <div class="unidade-card">
+        <div class="unidade-image">
+          <img src="../IMG/Gym15.webp" alt="Unidade São Miguel" width="600" height="400" loading="lazy">
+        </div>
+        <div class="unidade-info">
+          <h3>techFit São Miguel</h3>
+          <p class="unidade-endereco"><strong>📍 Endereço:</strong> Av. São Miguel, 5000 - São Miguel Paulista</p>
+          <p class="unidade-horario"><strong>⏰ Funcionamento:</strong> Seg a Sex: 06h–22h • Sáb: 07h–19h • Dom: 08h–16h</p>
+          <p class="unidade-contato"><strong>📞 Contato:</strong> (11) 9333-3333</p>
+          <button class="btn-agendar" data-unidade="techFit São Miguel">Escolher Esta Unidade</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="unidades.js"></script>
+</body>
+</html>
