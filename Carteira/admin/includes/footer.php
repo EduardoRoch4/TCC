@@ -5,6 +5,7 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/noticias.js"></script>
     <?php if (isset($chartLabels) && !empty($chartLabels)): ?>
     <script>
     // Gráfico de Ativos Mais Comprados

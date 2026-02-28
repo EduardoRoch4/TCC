@@ -7,6 +7,55 @@ $pageTitle = 'Minha Carteira';
 $pdo = getConnection();
 $usuarioId = $_SESSION['usuario_id'];
 
+// Atualiza tabela de histórico para o gráfico de evolução / ganhos mensais
+// $dataRef: data da operação (ex: data da compra); se nulo, usa hoje
+function atualizarHistoricoCarteira($pdo, $usuarioId, $dataRef = null) {
+    try {
+        $dataRef = $dataRef ?: date('Y-m-d');
+
+        // Renda variável: valor de mercado e valor investido
+        $stRecalc = $pdo->prepare("
+            SELECT 
+                SUM(ci.quantidade * a.preco_atual) as valor_total,
+                SUM(ci.quantidade * ci.preco_medio) as valor_investido
+            FROM carteira_investimentos ci
+            JOIN ativos a ON ci.ativo_id = a.id
+            WHERE ci.usuario_id = ?
+        ");
+        $stRecalc->execute([$usuarioId]);
+        $recalc = $stRecalc->fetch(PDO::FETCH_ASSOC);
+
+        $valorTotalVar = (float)($recalc['valor_total'] ?? 0);
+        $valorInvestVar = (float)($recalc['valor_investido'] ?? 0);
+
+        // Renda fixa: usa valor investido como valor atual/aplicado (sem projeção de juros)
+        $valorRendaFixa = 0;
+        try {
+            $stRf = $pdo->prepare("SELECT SUM(valor_investido) as total_rf FROM carteira_renda_fixa WHERE usuario_id = ?");
+            $stRf->execute([$usuarioId]);
+            $rowRf = $stRf->fetch(PDO::FETCH_ASSOC);
+            $valorRendaFixa = (float)($rowRf['total_rf'] ?? 0);
+        } catch (PDOException $e) {
+            // Tabela pode não existir, ignora
+        }
+
+        $valorTotalAtual = $valorTotalVar + $valorRendaFixa;
+        $valorAplicadoAtual = $valorInvestVar + $valorRendaFixa;
+
+        $stHist = $pdo->prepare("
+            INSERT INTO historico_valor_carteira (usuario_id, data_ref, valor_total, valor_aplicado)
+            VALUES (?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE 
+                valor_total = VALUES(valor_total),
+                valor_aplicado = VALUES(valor_aplicado)
+        ");
+        $stHist->execute([$usuarioId, $dataRef, $valorTotalAtual, $valorAplicadoAtual]);
+    } catch (PDOException $e) {
+        // Tabela de histórico pode não existir, apenas registra log
+        error_log('Erro ao atualizar histórico da carteira: ' . $e->getMessage());
+    }
+}
+
 // Detectar qual coluna de data existe (data_compra ou data_ultima_atualizacao)
 $colData = 'data_compra';
 try {
@@ -50,6 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $st = $pdo->prepare("INSERT INTO carteira_renda_fixa (usuario_id, emissor, tipo_titulo, indexador, taxa, forma, valor_investido, data_compra, data_vencimento, liquidez_diaria, notas) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
                 $st->execute([$usuarioId, $emissor, $tipoTitulo, $indexador, $taxa, $forma, $valorInvestido, $dataCompra, $dataVencimento, $liquidezDiaria, $notasRf]);
+                // usa a própria data da compra como data do histórico
+                atualizarHistoricoCarteira($pdo, $usuarioId, $dataCompra);
                 header('Location: carteira.php?sucesso=1');
                 exit;
             } catch (PDOException $e) { $mensagem = '<div class="alert alert-error">Erro ao salvar renda fixa. Execute database/migration_renda_fixa.sql</div>'; }
@@ -60,6 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($idRf > 0) {
             try {
                 $pdo->prepare("DELETE FROM carteira_renda_fixa WHERE id = ? AND usuario_id = ?")->execute([$idRf, $usuarioId]);
+                atualizarHistoricoCarteira($pdo, $usuarioId, date('Y-m-d'));
                 header('Location: carteira.php?sucesso=1');
                 exit;
             } catch (PDOException $e) { }
@@ -141,6 +193,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $pdo->commit();
+            // grava o histórico usando a data da operação (data_ultima_atualizacao)
+            atualizarHistoricoCarteira($pdo, $usuarioId, $dataAtualizacao);
             header('Location: carteira.php?sucesso=1');
             exit;
 
@@ -210,35 +264,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // O lucro será refletido automaticamente quando recalcular o valor_total da carteira
                 // Mas vamos criar um registro de operação de venda para histórico
                 try {
-                    $hoje = date('Y-m-d');
-                    // Recalcular valor total atual da carteira após a venda
-                    $stRecalc = $pdo->prepare("
-                        SELECT SUM(ci.quantidade * a.preco_atual) as valor_total,
-                               SUM(ci.quantidade * ci.preco_medio) as valor_investido
-                        FROM carteira_investimentos ci
-                        JOIN ativos a ON ci.ativo_id = a.id
-                        WHERE ci.usuario_id = ?
-                    ");
-                    $stRecalc->execute([$usuarioId]);
-                    $recalc = $stRecalc->fetch();
-                    
-                    if ($recalc) {
-                        $valorTotalAtual = (float)($recalc['valor_total'] ?? 0);
-                        $valorInvestidoAtual = (float)($recalc['valor_investido'] ?? 0);
-                        
-                        // Atualizar histórico com valores recalculados
-                        $stHist = $pdo->prepare("
-                            INSERT INTO historico_valor_carteira (usuario_id, data_ref, valor_total, valor_aplicado)
-                            VALUES (?, ?, ?, ?)
-                            ON DUPLICATE KEY UPDATE 
-                                valor_total = VALUES(valor_total),
-                                valor_aplicado = VALUES(valor_aplicado)
-                        ");
-                        $stHist->execute([$usuarioId, $hoje, $valorTotalAtual, $valorInvestidoAtual]);
-                    }
-                } catch (PDOException $e) {
-                    // Tabela pode não existir ainda, ignora
-                    error_log("Erro ao atualizar histórico após venda: " . $e->getMessage());
+                    atualizarHistoricoCarteira($pdo, $usuarioId, date('Y-m-d'));
+                } catch (Exception $e) {
+                    // erro já é tratado dentro da função
                 }
             }
             header('Location: carteira.php?sucesso=1');
@@ -256,6 +284,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare("DELETE FROM carteira_investimentos WHERE id = ? AND usuario_id = ?");
             $stmt->execute([$investimentoId, $usuarioId]);
         }
+        atualizarHistoricoCarteira($pdo, $usuarioId, date('Y-m-d'));
         header('Location: carteira.php?sucesso=1');
         exit;
     }
@@ -481,7 +510,7 @@ include 'includes/header.php';
         </div>
     </section>
 
-    <section class="carteira-ativos">
+    <section class="carteira-ativos" id="secaoLancamentos">
         <div class="container">
             <div class="ativos-header">
                 <h2>Meus Ativos (<?php echo count($investimentosFiltrados) + count($rendaFixaLista); ?>)</h2>
@@ -558,13 +587,35 @@ include 'includes/header.php';
                             <td><span class="comprar-nao">Não</span></td>
                             <td class="opcoes-cell">
                                 <div class="dropdown-opcoes">
-                                    <button type="button" class="btn-opcoes" title="Opções">⋯</button>
-                                    <div class="dropdown-menu">
-                                        <button type="button" onclick="editarInvestimento(<?php echo htmlspecialchars(json_encode($inv)); ?>)">Editar</button>
+                                    <button type="button" class="btn-opcoes" title="Ações do ativo">⋯</button>
+                                    <div class="dropdown-menu dropdown-menu-acoes">
+                                        <button type="button" class="dropdown-item" onclick="abrirModalLancamento();">
+                                            <span class="icon icon-plus"></span>
+                                            <span>Adicionar Lançamento</span>
+                                        </button>
+                                        <button type="button" class="dropdown-item" onclick="scrollParaLancamentos();">
+                                            <span class="icon icon-list"></span>
+                                            <span>Ver lançamentos</span>
+                                        </button>
+                                        <a class="dropdown-item" href="https://investidor10.com.br/acoes/<?php echo strtolower($inv['codigo']); ?>/" target="_blank" rel="noopener">
+                                            <span class="icon icon-chart"></span>
+                                            <span>Ver fundamentos</span>
+                                        </a>
+                                        <button type="button" class="dropdown-item" onclick="editarInvestimento(<?php echo htmlspecialchars(json_encode($inv)); ?>)">
+                                            <span class="icon icon-notes"></span>
+                                            <span>Minhas observações</span>
+                                        </button>
+                                        <button type="button" class="dropdown-item" onclick="showToast('Em breve você poderá personalizar as colunas.', 'info');">
+                                            <span class="icon icon-columns"></span>
+                                            <span>Editar colunas</span>
+                                        </button>
                                         <form method="POST" onsubmit="return confirm('Remover este ativo?');">
                                             <input type="hidden" name="acao" value="remover">
                                             <input type="hidden" name="ativo_id" value="<?php echo (int)$inv['ativo_id']; ?>">
-                                            <button type="submit">Remover</button>
+                                            <button type="submit" class="dropdown-item dropdown-item-danger">
+                                                <span class="icon icon-trash"></span>
+                                                <span>Excluir</span>
+                                            </button>
                                         </form>
                                     </div>
                                 </div>
@@ -888,6 +939,11 @@ function abrirModalLancamento() {
     
     var dataCompra = document.getElementById('data_compra');
     if (dataCompra) dataCompra.value = '<?php echo date('Y-m-d'); ?>';
+}
+function scrollParaLancamentos() {
+    var sec = document.getElementById('secaoLancamentos');
+    if (!sec) return;
+    sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 function fecharModalLancamento() {
     document.getElementById('modalLancamento').classList.remove('active');

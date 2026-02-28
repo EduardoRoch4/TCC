@@ -8,12 +8,24 @@ header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 
 // Configuração da NewsAPI (você precisa de uma chave gratuita em https://newsapi.org/)
-$newsApiKey = 'YOUR_NEWSAPI_KEY_HERE'; // Substitua pela sua chave
+$newsApiKey = '703e4834835a4111ada56367809c49b0'; // Substitua pela sua chave
 // Buscar apenas notícias financeiras
 $newsApiUrl = 'https://newsapi.org/v2/everything?q=(finanças+OR+investimentos+OR+bolsa+de+valores+OR+ações+OR+FII+OR+renda+fixa+OR+CDI+OR+Selic+OR+Ibovespa+OR+dólar+OR+mercado+financeiro+OR+economia+financeira)&language=pt&sortBy=publishedAt&pageSize=20';
 
+// Função auxiliar para lowercase com ou sem mbstring
+function textoParaMinusculo($texto) {
+    if (function_exists('mb_strtolower')) {
+        return mb_strtolower($texto ?? '', 'UTF-8');
+    }
+    return strtolower($texto ?? '');
+}
+
 // Função para buscar via NewsAPI
 function buscarNoticiasNewsAPI($url, $apiKey) {
+    if (!function_exists('curl_init')) {
+        // cURL não disponível, não tenta usar NewsAPI
+        return null;
+    }
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url . '&apiKey=' . $apiKey);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -21,7 +33,6 @@ function buscarNoticiasNewsAPI($url, $apiKey) {
     curl_setopt($ch, CURLOPT_TIMEOUT, 10);
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
     
     if ($httpCode === 200) {
         return json_decode($response, true);
@@ -31,6 +42,10 @@ function buscarNoticiasNewsAPI($url, $apiKey) {
 
 // Função para buscar via RSS feeds brasileiros (fallback)
 function buscarNoticiasRSS() {
+    if (!function_exists('simplexml_load_file')) {
+        // SimpleXML não disponível, retorna lista vazia para cair no fallback
+        return [];
+    }
     $feeds = [
         'https://www.infomoney.com.br/feed/',
         'https://www.valor.com.br/financas/rss',
@@ -119,8 +134,8 @@ if ($newsApiKey !== 'YOUR_NEWSAPI_KEY_HERE') {
         ];
         
         $artigosFinanceiros = array_filter($resultado['articles'], function($article) use ($palavrasChave) {
-            $titulo = mb_strtolower($article['title'] ?? '', 'UTF-8');
-            $descricao = mb_strtolower($article['description'] ?? '', 'UTF-8');
+            $titulo = textoParaMinusculo($article['title'] ?? '');
+            $descricao = textoParaMinusculo($article['description'] ?? '');
             
             foreach ($palavrasChave as $palavra) {
                 if (stripos($titulo, $palavra) !== false || stripos($descricao, $palavra) !== false) {

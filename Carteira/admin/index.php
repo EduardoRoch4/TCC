@@ -291,6 +291,18 @@ include __DIR__ . '/includes/header.php';
                     </ul>
                     <?php endif; ?>
                 </div>
+
+                <div class="admin-card">
+                    <div class="card-header-flex">
+                        <div>
+                            <h3>Notícias financeiras</h3>
+                            <p class="card-desc">Principais notícias do mercado (NewsAPI / RSS)</p>
+                        </div>
+                    </div>
+                    <div id="newsContainerAdmin" class="news-grid news-grid-admin">
+                        <div class="news-loading">Carregando notícias...</div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

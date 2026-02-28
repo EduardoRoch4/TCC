@@ -7,6 +7,26 @@ $pageTitle = 'Dashboard';
 $pdo = getConnection();
 $usuarioId = $_SESSION['usuario_id'];
 
+// Função para atualizar histórico (mesma lógica da carteira.php)
+function atualizarHistoricoCarteiraDashboard($pdo, $usuarioId, $valorTotalVar, $valorInvestVar, $valorRendaFixa) {
+    try {
+        $hoje = date('Y-m-d');
+        $valorTotalAtual = $valorTotalVar + $valorRendaFixa;
+        $valorAplicadoAtual = $valorInvestVar + $valorRendaFixa;
+
+        $stHist = $pdo->prepare("
+            INSERT INTO historico_valor_carteira (usuario_id, data_ref, valor_total, valor_aplicado)
+            VALUES (?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE 
+                valor_total = VALUES(valor_total),
+                valor_aplicado = VALUES(valor_aplicado)
+        ");
+        $stHist->execute([$usuarioId, $hoje, round($valorTotalAtual, 2), round($valorAplicadoAtual, 2)]);
+    } catch (PDOException $e) {
+        error_log('Erro ao atualizar histórico da carteira: ' . $e->getMessage());
+    }
+}
+
 // Buscar resumo da carteira (agregado por ativo)
 $stmt = $pdo->prepare("
     SELECT agg.quantidade, agg.preco_medio, a.codigo, a.nome, a.preco_atual, a.variacao_dia, t.nome as tipo
@@ -42,47 +62,99 @@ foreach ($investimentos as $inv) {
     $porAtivo[$inv['codigo']] = ($porAtivo[$inv['codigo']] ?? 0) + $valorAtual;
 }
 
-$resultadoTotal = $valorTotal - $valorInvestido;
-$resultadoPct = $valorInvestido > 0 ? (($valorTotal / $valorInvestido) - 1) * 100 : 0;
+// Renda fixa: usa valor investido como valor atual/aplicado (sem projeção de juros)
+$valorRendaFixa = 0;
+try {
+    $stmtRf = $pdo->prepare("SELECT SUM(valor_investido) AS total_rf FROM carteira_renda_fixa WHERE usuario_id = ?");
+    $stmtRf->execute([$usuarioId]);
+    $rowRf = $stmtRf->fetch(PDO::FETCH_ASSOC);
+    $valorRendaFixa = (float)($rowRf['total_rf'] ?? 0);
+} catch (PDOException $e) {
+    $valorRendaFixa = 0;
+}
+
+// Totais gerais (variável + renda fixa)
+$valorTotalGeral = $valorTotal + $valorRendaFixa;
+$valorInvestidoGeral = $valorInvestido + $valorRendaFixa;
+
+$resultadoTotal = $valorTotalGeral - $valorInvestidoGeral;
+$resultadoPct = $valorInvestidoGeral > 0 ? (($valorTotalGeral / $valorInvestidoGeral) - 1) * 100 : 0;
 
 // Salvar snapshot hoje (valor_total e valor_aplicado para gráfico Evolução do Patrimônio)
-$historico = [];
+atualizarHistoricoCarteiraDashboard($pdo, $usuarioId, $valorTotal, $valorInvestido, $valorRendaFixa);
 $hoje = date('Y-m-d');
+
 try {
-    $stmtHist = $pdo->prepare("
-        INSERT INTO historico_valor_carteira (usuario_id, data_ref, valor_total, valor_aplicado)
-        VALUES (?, ?, ?, ?)
-        ON DUPLICATE KEY UPDATE valor_total = VALUES(valor_total), valor_aplicado = COALESCE(VALUES(valor_aplicado), valor_aplicado)
+    // Busca histórico dos últimos 12 meses, agregando por mês (pega o último valor de cada mês)
+    $stmtHistList = $pdo->prepare("
+        SELECT 
+            DATE_FORMAT(data_ref, '%Y-%m') as mes_ano,
+            MAX(data_ref) as data_ref,
+            MAX(valor_total) as valor_total,
+            MAX(valor_aplicado) as valor_aplicado
+        FROM historico_valor_carteira
+        WHERE usuario_id = ? 
+            AND data_ref >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+        GROUP BY DATE_FORMAT(data_ref, '%Y-%m')
+        ORDER BY mes_ano ASC
     ");
-    $stmtHist->execute([$usuarioId, $hoje, round($valorTotal, 2), round($valorInvestido, 2)]);
+    $stmtHistList->execute([$usuarioId]);
+    $historicoRaw = $stmtHistList->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Se não tem dados mensais, busca todos os dados diários e agrega por mês
+    if (empty($historicoRaw)) {
+        $stmtHistList2 = $pdo->prepare("
+            SELECT data_ref, valor_total, valor_aplicado
+            FROM historico_valor_carteira
+            WHERE usuario_id = ?
+            ORDER BY data_ref ASC
+        ");
+        $stmtHistList2->execute([$usuarioId]);
+        $historicoDia = $stmtHistList2->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Agrega por mês manualmente
+        $historicoPorMes = [];
+        foreach ($historicoDia as $row) {
+            $mesAno = date('Y-m', strtotime($row['data_ref']));
+            if (!isset($historicoPorMes[$mesAno])) {
+                $historicoPorMes[$mesAno] = $row;
+            } else {
+                // Mantém o último valor do mês
+                if (strtotime($row['data_ref']) > strtotime($historicoPorMes[$mesAno]['data_ref'])) {
+                    $historicoPorMes[$mesAno] = $row;
+                }
+            }
+        }
+        $historico = array_values($historicoPorMes);
+    } else {
+        $historico = $historicoRaw;
+    }
 } catch (PDOException $e) {
     try {
-        $stmtHist = $pdo->prepare("
-            INSERT INTO historico_valor_carteira (usuario_id, data_ref, valor_total)
-            VALUES (?, ?, ?)
-            ON DUPLICATE KEY UPDATE valor_total = VALUES(valor_total)
-        ");
-        $stmtHist->execute([$usuarioId, $hoje, round($valorTotal, 2)]);
-    } catch (PDOException $e2) { }
+        $stmtHistList = $pdo->prepare("SELECT data_ref, valor_total FROM historico_valor_carteira WHERE usuario_id = ? ORDER BY data_ref ASC");
+        $stmtHistList->execute([$usuarioId]);
+        $historicoDia = $stmtHistList->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Agrega por mês manualmente
+        $historicoPorMes = [];
+        foreach ($historicoDia as $row) {
+            $mesAno = date('Y-m', strtotime($row['data_ref']));
+            if (!isset($historicoPorMes[$mesAno])) {
+                $historicoPorMes[$mesAno] = ['data_ref' => $row['data_ref'], 'valor_total' => $row['valor_total'], 'valor_aplicado' => $row['valor_total']];
+            } else {
+                if (strtotime($row['data_ref']) > strtotime($historicoPorMes[$mesAno]['data_ref'])) {
+                    $historicoPorMes[$mesAno] = ['data_ref' => $row['data_ref'], 'valor_total' => $row['valor_total'], 'valor_aplicado' => $row['valor_total']];
+                }
+            }
+        }
+        $historico = array_values($historicoPorMes);
+    } catch (PDOException $e2) {
+        $historico = [];
+    }
 }
 
-try {
-    $stmtHistList = $pdo->prepare("
-        SELECT data_ref, valor_total, valor_aplicado
-        FROM historico_valor_carteira
-        WHERE usuario_id = ?
-        ORDER BY data_ref ASC
-    ");
-    $stmtHistList->execute([$usuarioId]);
-    $historico = $stmtHistList->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $stmtHistList = $pdo->prepare("SELECT data_ref, valor_total FROM historico_valor_carteira WHERE usuario_id = ? ORDER BY data_ref ASC");
-    $stmtHistList->execute([$usuarioId]);
-    $historico = $stmtHistList->fetchAll(PDO::FETCH_ASSOC);
-}
-
-if (empty($historico) && $valorTotal > 0) {
-    $historico = [['data_ref' => $hoje, 'valor_total' => $valorTotal, 'valor_aplicado' => $valorInvestido]];
+if (empty($historico) && $valorTotalGeral > 0) {
+    $historico = [['data_ref' => $hoje, 'valor_total' => $valorTotalGeral, 'valor_aplicado' => $valorInvestidoGeral]];
 }
 
 $topAtivos = array_slice($investimentos, 0, 5);
@@ -114,11 +186,11 @@ include 'includes/header.php';
             <div class="summary-cards">
                 <div class="summary-card highlight">
                     <span class="summary-label">Valor Total da Carteira</span>
-                    <span class="summary-value">R$ <?php echo number_format($valorTotal, 2, ',', '.'); ?></span>
+                    <span class="summary-value">R$ <?php echo number_format($valorTotalGeral, 2, ',', '.'); ?></span>
                 </div>
                 <div class="summary-card">
                     <span class="summary-label">Total Investido</span>
-                    <span class="summary-value">R$ <?php echo number_format($valorInvestido, 2, ',', '.'); ?></span>
+                    <span class="summary-value">R$ <?php echo number_format($valorInvestidoGeral, 2, ',', '.'); ?></span>
                 </div>
                 <div class="summary-card">
                     <span class="summary-label">Lucro/Prejuízo</span>
@@ -233,13 +305,23 @@ include 'includes/header.php';
     var porTipoValores = <?php echo json_encode(array_values($porTipo)); ?>;
 
     evolucaoLabels = evolucaoLabels.map(function(d) {
+        // Se já está no formato YYYY-MM (agregado por mês), formata como "MM/YYYY"
+        if (d.match(/^\d{4}-\d{2}$/)) {
+            var parts = d.split('-');
+            return parts[1] + '/' + parts[0];
+        }
+        // Se está no formato YYYY-MM-DD, formata como "MM/YYYY"
         var parts = d.split('-');
-        return parts[2] + '/' + parts[1];
+        if (parts.length === 3) {
+            return parts[1] + '/' + parts[0];
+        }
+        return d;
     });
 
     var ganhoData = evolucaoValores.map(function(v, i) {
         var apl = evolucaoAplicado[i] || 0;
-        return Math.max(0, v - apl);
+        // permite mostrar lucro (positivo) e prejuízo (negativo)
+        return v - apl;
     });
 
     if (evolucaoValores.length > 0) {
