@@ -1,0 +1,94 @@
+-- InteliFood - Schema do Banco de Dados
+-- Execute este arquivo para criar o banco e as tabelas
+
+CREATE DATABASE IF NOT EXISTS intelifood CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE intelifood;
+
+-- Tabela de Usuários (clientes e administradores)
+CREATE TABLE Usuario (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
+    tipo ENUM('cliente', 'admin') NOT NULL DEFAULT 'cliente',
+    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Mesas
+CREATE TABLE Mesas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    numero INT NOT NULL UNIQUE,
+    capacidade INT NOT NULL DEFAULT 4,
+    ocupada TINYINT(1) DEFAULT 0,
+    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Produtos (itens do cardápio)
+CREATE TABLE Produtos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    preco DECIMAL(10, 2) NOT NULL,
+    categoria VARCHAR(50) NOT NULL,
+    ativo TINYINT(1) DEFAULT 1,
+    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Vendas (pedidos)
+CREATE TABLE Vendas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT,
+    mesa_id INT NOT NULL,
+    total DECIMAL(10, 2) DEFAULT 0.00,
+    status ENUM('aberto', 'fechado', 'cancelado') DEFAULT 'aberto',
+    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES Usuario(id) ON DELETE SET NULL,
+    FOREIGN KEY (mesa_id) REFERENCES Mesas(id) ON DELETE RESTRICT
+);
+
+-- Itens de cada venda
+CREATE TABLE Venda_Itens (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    venda_id INT NOT NULL,
+    produto_id INT NOT NULL,
+    quantidade INT NOT NULL DEFAULT 1,
+    preco_unitario DECIMAL(10, 2) NOT NULL,
+    subtotal DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (venda_id) REFERENCES Vendas(id) ON DELETE CASCADE,
+    FOREIGN KEY (produto_id) REFERENCES Produtos(id) ON DELETE RESTRICT
+);
+
+-- Contas a pagar
+CREATE TABLE Contas_Pagar (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    descricao VARCHAR(200) NOT NULL,
+    valor DECIMAL(10, 2) NOT NULL,
+    data_vencimento DATE NOT NULL,
+    pago TINYINT(1) DEFAULT 0,
+    data_pagamento DATE NULL,
+    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Índices para performance
+CREATE INDEX idx_vendas_status ON Vendas(status);
+CREATE INDEX idx_vendas_criado ON Vendas(criado_em);
+CREATE INDEX idx_produtos_categoria ON Produtos(categoria);
+CREATE INDEX idx_produtos_ativo ON Produtos(ativo);
+
+-- Mesas de exemplo
+INSERT INTO Mesas (numero, capacidade) VALUES
+(1, 4), (2, 4), (3, 6), (4, 2), (5, 4), (6, 8), (7, 4), (8, 2);
+
+-- Categorias e produtos de exemplo
+INSERT INTO Produtos (nome, descricao, preco, categoria) VALUES
+('X-Burger', 'Hambúrguer artesanal com queijo', 25.90, 'Lanches'),
+('X-Tudo', 'Hambúrguer com bacon, ovo e queijo', 32.90, 'Lanches'),
+('Refrigerante 350ml', 'Coca-Cola, Guaraná ou Fanta', 5.00, 'Bebidas'),
+('Suco Natural', 'Laranja, limão ou maracujá', 8.00, 'Bebidas'),
+('Batata Frita', 'Porção individual', 12.00, 'Acompanhamentos'),
+('Feijoada', 'Feijoada completa com acompanhamentos', 35.00, 'Pratos'),
+('Filé à Parmegiana', 'Filé com molho e queijo', 38.00, 'Pratos');
+
+
+select * from mesas
